@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ana Holding — Private Trading Company</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+  :root {
+    --navy: #14213D;
+    --dark-bg: #0B1120;
+    --brass: #B08D57;
+    --brass-light: #D4B87A;
+    --brass-pale: #E8D5A8;
+    --white: #FFFFFF;
+    --mid-gray: #8E8E93;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: linear-gradient(135deg, var(--navy) 0%, var(--dark-bg) 100%);
+    color: var(--white);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    -webkit-font-smoothing: antialiased;
+    padding: 40px 24px;
+  }
+
+  .container {
+    text-align: center;
+    max-width: 560px;
+  }
+
+  .badge {
+    display: inline-block;
+    border: 1px solid rgba(176,141,87,0.4);
+    color: var(--brass-light);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 8px 20px;
+    border-radius: 2px;
+    margin-bottom: 40px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(42px, 6vw, 72px);
+    font-weight: 700;
+    letter-spacing: 6px;
+    line-height: 1.05;
+    margin-bottom: 16px;
+  }
+
+  h1 span {
+    display: block;
+    background: linear-gradient(90deg, var(--brass), var(--brass-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .tagline {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 18px;
+    color: var(--brass-pale);
+    font-style: italic;
+    margin-bottom: 8px;
+  }
+
+  .location {
+    font-size: 13px;
+    color: var(--mid-gray);
+    letter-spacing: 1px;
+    margin-bottom: 48px;
+  }
+
+  .divider {
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--brass), var(--brass-light));
+    margin: 0 auto 48px;
+  }
+
+  .description {
+    font-size: 16px;
+    line-height: 1.75;
+    color: rgba(255,255,255,0.65);
+    margin-bottom: 48px;
+  }
+
+  .contact-btn {
+    display: inline-block;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--navy);
+    background: linear-gradient(90deg, var(--brass), var(--brass-light));
+    padding: 16px 40px;
+    border-radius: 2px;
+    text-decoration: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    cursor: pointer;
+    border: none;
+  }
+
+  .contact-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+  }
+
+  /* Contact form overlay */
+  .overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(11,17,32,0.85);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .overlay.active { display: flex; }
+
+  .form-card {
+    background: var(--navy);
+    border-top: 3px solid var(--brass);
+    border-radius: 4px;
+    padding: 40px;
+    width: 100%;
+    max-width: 460px;
+    position: relative;
+  }
+
+  .form-card h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 24px;
+    margin-bottom: 8px;
+  }
+
+  .form-card p {
+    font-size: 14px;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 28px;
+  }
+
+  .close-btn {
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: var(--mid-gray);
+    font-size: 24px;
+    cursor: pointer;
+  }
+
+  .close-btn:hover { color: var(--white); }
+
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--brass-light);
+    margin-bottom: 6px;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    width: 100%;
+    padding: 12px 16px;
+    background: var(--dark-bg);
+    border: 1px solid rgba(176,141,87,0.25);
+    border-radius: 2px;
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .form-group input:focus,
+  .form-group textarea:focus {
+    border-color: var(--brass);
+  }
+
+  .form-group textarea {
+    height: 100px;
+    resize: vertical;
+  }
+
+  .submit-btn {
+    width: 100%;
+    margin-top: 8px;
+  }
+
+  .success-msg {
+    display: none;
+    text-align: center;
+    padding: 20px 0;
+  }
+
+  .success-msg h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    margin-bottom: 8px;
+    color: var(--brass-light);
+  }
+
+  .success-msg p {
+    color: rgba(255,255,255,0.5);
+    font-size: 14px;
+  }
+
+  .footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    padding: 16px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.2);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="badge">Zug, Switzerland</div>
+  <h1>ANA<br><span>HOLDING</span></h1>
+  <p class="tagline">Private Trading & Commodity Solutions</p>
+  <p class="location">Part of Ana Wealth</p>
+  <div class="divider"></div>
+  <p class="description">Ana Holding is a private trading company specialising in the sourcing, certification, and facilitation of high-purity metals across international markets.</p>
+  <button class="contact-btn" onclick="document.getElementById('overlay').classList.add('active')">Contact Us</button>
+</div>
+
+<div class="overlay" id="overlay" onclick="if(event.target===this)this.classList.remove('active')">
+  <div class="form-card">
+    <button class="close-btn" onclick="document.getElementById('overlay').classList.remove('active')">&times;</button>
+    <div id="form-view">
+      <h2>Get in Touch</h2>
+      <p>We will respond within one business day.</p>
+      <form id="contact-form" onsubmit="return handleSubmit(event)">
+        <div class="form-group">
+          <label>Name</label>
+          <input type="text" name="name" required>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" name="email" required>
+        </div>
+        <div class="form-group">
+          <label>Message</label>
+          <textarea name="message" required></textarea>
+        </div>
+        <button type="submit" class="contact-btn submit-btn">Send Message</button>
+      </form>
+    </div>
+    <div class="success-msg" id="success-msg">
+      <h3>Message Sent</h3>
+      <p>Thank you for reaching out. We will be in touch shortly.</p>
+    </div>
+  </div>
+</div>
+
+<div class="footer">&copy; 2026 Ana Holding AG</div>
+
+<script>
+function handleSubmit(e) {
+  e.preventDefault();
+  var form = document.getElementById('contact-form');
+  var data = new FormData(form);
+  var mailto = 'mailto:info@ana-holding.ch'
+    + '?subject=' + encodeURIComponent('Website Inquiry from ' + data.get('name'))
+    + '&body=' + encodeURIComponent(
+        'Name: ' + data.get('name') + '\n'
+      + 'Email: ' + data.get('email') + '\n\n'
+      + data.get('message')
+    );
+  window.location.href = mailto;
+  document.getElementById('form-view').style.display = 'none';
+  document.getElementById('success-msg').style.display = 'block';
+  return false;
+}
+</script>
+
+</body>
+</html>
