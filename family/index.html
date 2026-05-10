@@ -1,0 +1,1733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Steward — A private workspace for Swiss family offices</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --brg: #0B3B2E;
+    --brg-deep: #072A20;
+    --brg-soft: #1E5345;
+    --paper: #F5F1EA;
+    --paper-warm: #EFE9DE;
+    --ink: #0B3B2E;
+    --ink-muted: #5A6E66;
+    --brass: #A8936A;
+    --brass-soft: #C4B48A;
+    --rule: #D8D0BF;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 17px;
+    line-height: 1.6;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(168, 147, 106, 0.03) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(11, 59, 46, 0.02) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .serif {
+    font-family: 'EB Garamond', serif;
+    font-weight: 400;
+  }
+
+  .italic { font-style: italic; }
+
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 28px 56px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+    background: rgba(245, 241, 234, 0.8);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.4s ease;
+  }
+
+  nav.scrolled {
+    border-bottom-color: var(--rule);
+  }
+
+  .mark {
+    font-family: 'EB Garamond', serif;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--brg);
+    letter-spacing: 0.02em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .mark-dot {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    background: var(--brass);
+    border-radius: 50%;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 40px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink-muted);
+    letter-spacing: 0.02em;
+  }
+
+  .nav-links a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .nav-links a:hover { color: var(--brg); }
+
+  .nav-cta {
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 20px;
+    border: 1px solid var(--brg);
+    color: var(--brg);
+    background: transparent;
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    transition: all 0.25s ease;
+    border-radius: 2px;
+  }
+
+  .nav-cta:hover {
+    background: var(--brg);
+    color: var(--paper);
+  }
+
+  section {
+    position: relative;
+    z-index: 1;
+    padding: 160px 56px;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .container-narrow {
+    max-width: 840px;
+    margin: 0 auto;
+  }
+
+  .hero {
+    min-height: 100vh;
+    padding-top: 200px;
+    padding-bottom: 120px;
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+
+  .hero-label {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--brass);
+    margin-bottom: 48px;
+    opacity: 0;
+    animation: fade-up 0.9s ease forwards;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .hero-label-rule {
+    width: 40px;
+    height: 1px;
+    background: var(--brass);
+  }
+
+  .hero-headline {
+    font-family: 'EB Garamond', serif;
+    font-size: clamp(48px, 7vw, 92px);
+    line-height: 1.02;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    color: var(--brg);
+    margin-bottom: 44px;
+    max-width: 16ch;
+    opacity: 0;
+    animation: fade-up 0.9s ease 0.15s forwards;
+  }
+
+  .hero-headline em {
+    font-style: italic;
+    color: var(--brg-soft);
+  }
+
+  .hero-sub {
+    font-size: 20px;
+    line-height: 1.55;
+    max-width: 620px;
+    color: var(--ink);
+    margin-bottom: 72px;
+    opacity: 0;
+    animation: fade-up 0.9s ease 0.3s forwards;
+  }
+
+  .hero-meta {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    font-size: 13px;
+    color: var(--ink-muted);
+    letter-spacing: 0.04em;
+    opacity: 0;
+    animation: fade-up 0.9s ease 0.45s forwards;
+  }
+
+  .hero-meta-rule {
+    width: 48px;
+    height: 1px;
+    background: var(--brass);
+  }
+
+  .hero-origin {
+    margin-top: 28px;
+    font-family: 'EB Garamond', serif;
+    font-size: 17px;
+    font-style: italic;
+    color: var(--ink-muted);
+    line-height: 1.55;
+    max-width: 560px;
+    letter-spacing: -0.005em;
+    opacity: 0;
+    animation: fade-up 0.9s ease 0.6s forwards;
+  }
+
+  .hero-origin em {
+    color: var(--brass);
+    font-style: italic;
+  }
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .section-label {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--brass);
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .section-label::before {
+    content: '';
+    display: inline-block;
+    width: 32px;
+    height: 1px;
+    background: var(--brass);
+  }
+
+  .section-title {
+    font-family: 'EB Garamond', serif;
+    font-size: clamp(36px, 4.5vw, 56px);
+    line-height: 1.1;
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    color: var(--brg);
+    margin-bottom: 40px;
+    max-width: 20ch;
+  }
+
+  .section-title em {
+    font-style: italic;
+    color: var(--brg-soft);
+  }
+
+  .section-lead {
+    font-size: 19px;
+    line-height: 1.6;
+    color: var(--ink);
+    max-width: 640px;
+    margin-bottom: 64px;
+  }
+
+  .problem {
+    background: var(--paper-warm);
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .problem-body {
+    font-family: 'EB Garamond', serif;
+    font-size: 26px;
+    line-height: 1.5;
+    font-weight: 400;
+    color: var(--brg);
+    max-width: 780px;
+    margin: 0 auto;
+    text-align: left;
+  }
+
+  .problem-body p {
+    margin-bottom: 28px;
+  }
+
+  .problem-body p:last-child {
+    margin-bottom: 0;
+  }
+
+  .problem-body .accent {
+    font-style: italic;
+    color: var(--brg-soft);
+  }
+
+  .problem-quote {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 22px;
+    color: var(--brass);
+    padding-left: 28px;
+    border-left: 1px solid var(--brass);
+    margin: 40px 0;
+    line-height: 1.5;
+  }
+
+  .pillars {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 48px;
+    margin-top: 24px;
+  }
+
+  .pillar {
+    padding-top: 32px;
+    border-top: 1px solid var(--brg);
+    position: relative;
+  }
+
+  .pillar-number {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 18px;
+    color: var(--brass);
+    margin-bottom: 16px;
+  }
+
+  .pillar-title {
+    font-family: 'EB Garamond', serif;
+    font-size: 28px;
+    line-height: 1.15;
+    font-weight: 500;
+    color: var(--brg);
+    margin-bottom: 20px;
+    letter-spacing: -0.01em;
+  }
+
+  .pillar-body {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--ink);
+  }
+
+  .hero-use-case {
+    background: var(--brg);
+    color: var(--paper);
+  }
+
+  .hero-use-case .section-label { color: var(--brass-soft); }
+  .hero-use-case .section-label::before { background: var(--brass-soft); }
+  .hero-use-case .section-title { color: var(--paper); }
+  .hero-use-case .section-title em { color: var(--brass-soft); }
+  .hero-use-case .section-lead { color: var(--paper-warm); opacity: 0.9; }
+
+  .queries {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: 56px;
+    border-top: 1px solid rgba(245, 241, 234, 0.15);
+    border-bottom: 1px solid rgba(245, 241, 234, 0.15);
+  }
+
+  .query {
+    padding: 36px 0;
+    border-bottom: 1px solid rgba(245, 241, 234, 0.08);
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: 32px;
+    align-items: baseline;
+  }
+
+  .query:last-child { border-bottom: none; }
+
+  .query-num {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    color: var(--brass-soft);
+    font-size: 18px;
+  }
+
+  .query-text {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 26px;
+    line-height: 1.4;
+    font-weight: 400;
+    color: var(--paper);
+    letter-spacing: -0.005em;
+  }
+
+  .hero-use-case-footer {
+    margin-top: 64px;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--paper-warm);
+    opacity: 0.85;
+    max-width: 640px;
+  }
+
+  .how-it-works {
+    margin-top: 56px;
+    padding-top: 32px;
+    border-top: 1px solid rgba(168, 147, 106, 0.25);
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--brass-soft);
+    max-width: 720px;
+    letter-spacing: -0.005em;
+  }
+
+  .how-it-works em {
+    color: var(--paper);
+    font-style: italic;
+  }
+
+  .capabilities {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    margin-top: 48px;
+    border-top: 1px solid var(--rule);
+    border-left: 1px solid var(--rule);
+  }
+
+  .capability {
+    padding: 48px 44px;
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    transition: background 0.3s ease;
+    position: relative;
+  }
+
+  .capability:hover {
+    background: var(--paper-warm);
+  }
+
+  .capability-wide {
+    grid-column: 1 / -1;
+    padding: 56px 56px;
+  }
+
+  .capability-wide .capability-title {
+    font-size: 30px;
+    margin-bottom: 18px;
+  }
+
+  .capability-wide .capability-body {
+    font-size: 16px;
+    max-width: 780px;
+  }
+
+  /* The substrate card — Advisor Coordination — gets its own warm treatment */
+  .capability-wide.capability-substrate {
+    background: var(--paper-warm);
+  }
+
+  .capability-wide.capability-substrate:hover {
+    background: var(--paper);
+  }
+
+  .capability-tag {
+    display: inline-block;
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 13px;
+    color: var(--brass);
+    letter-spacing: 0.04em;
+    margin-bottom: 12px;
+    padding: 4px 12px;
+    border: 1px solid var(--brass);
+    border-radius: 2px;
+  }
+
+  /* ——— House Rules architectural block ——— */
+  .house-rules {
+    margin-top: 32px;
+    margin-bottom: 56px;
+    padding: 32px 36px;
+    background: var(--paper-warm);
+    border-left: 3px solid var(--brass);
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 40px;
+    align-items: baseline;
+  }
+
+  .house-rules-label {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--brass);
+    letter-spacing: 0.02em;
+  }
+
+  .house-rules-body {
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--ink);
+  }
+
+  .house-rules-body strong {
+    font-family: 'EB Garamond', serif;
+    font-weight: 500;
+    color: var(--brg);
+    font-size: 18px;
+    margin-right: 4px;
+  }
+
+  .capability-num {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--brass);
+    margin-bottom: 24px;
+  }
+
+  .capability-title {
+    font-family: 'EB Garamond', serif;
+    font-size: 26px;
+    line-height: 1.2;
+    font-weight: 500;
+    color: var(--brg);
+    margin-bottom: 16px;
+    letter-spacing: -0.01em;
+  }
+
+  .capability-body {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--ink-muted);
+  }
+
+  .sovereignty-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 96px;
+    align-items: start;
+    margin-top: 24px;
+  }
+
+  .sovereignty-body p {
+    font-size: 17px;
+    line-height: 1.7;
+    color: var(--ink);
+    margin-bottom: 24px;
+  }
+
+  .sovereignty-body p:last-child { margin-bottom: 0; }
+
+  .sovereignty-body strong {
+    font-weight: 500;
+    color: var(--brg);
+  }
+
+  .sovereignty-tiers {
+    background: var(--paper);
+    padding: 40px;
+    border: 1px solid var(--rule);
+  }
+
+  .tier {
+    padding: 20px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .tier:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .tier:first-child { padding-top: 0; }
+
+  .tier-label {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--brass);
+    margin-bottom: 8px;
+    letter-spacing: 0.02em;
+  }
+
+  .tier-title {
+    font-family: 'EB Garamond', serif;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--brg);
+    margin-bottom: 10px;
+    letter-spacing: -0.01em;
+  }
+
+  .tier-body {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--ink-muted);
+  }
+
+  .tier-header {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--brg);
+    line-height: 1.5;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 20px;
+    letter-spacing: -0.005em;
+  }
+
+  /* ——— Q&A grid (the five questions every director asks) ——— */
+  .qa-grid {
+    margin: 48px 0 32px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .qa {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 48px;
+    padding: 24px 0;
+    border-top: 1px solid var(--rule);
+    align-items: baseline;
+  }
+
+  .qa:first-child {
+    border-top: 1px solid var(--brass);
+  }
+
+  .qa:last-child {
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .qa-q {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 22px;
+    color: var(--brg);
+    line-height: 1.3;
+    letter-spacing: -0.005em;
+  }
+
+  .qa-a {
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--ink);
+  }
+
+  .qa-footer {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--ink-muted);
+    font-style: italic;
+    margin: 32px 0 64px;
+    max-width: 780px;
+  }
+
+  .qa-footer strong {
+    color: var(--brg);
+    font-weight: 500;
+    font-style: normal;
+  }
+
+  .sovereignty-tiers-wrap {
+    margin-top: 24px;
+  }
+
+  .sovereignty-tiers-intro {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 18px;
+    color: var(--brg);
+    line-height: 1.4;
+    margin-bottom: 24px;
+    letter-spacing: -0.005em;
+    max-width: 780px;
+  }
+
+  /* ——— Swiss credential strip ——— */
+  .credentials {
+    background: var(--brg-deep);
+    color: var(--paper);
+    padding: 80px 56px;
+    border-top: 1px solid rgba(168, 147, 106, 0.2);
+  }
+
+  .credentials-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 48px;
+  }
+
+  .cred {
+    border-left: 1px solid rgba(168, 147, 106, 0.3);
+    padding-left: 24px;
+  }
+
+  .cred-label {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--brass-soft);
+    margin-bottom: 10px;
+    letter-spacing: 0.02em;
+  }
+
+  .cred-value {
+    font-family: 'EB Garamond', serif;
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--paper);
+    line-height: 1.3;
+    letter-spacing: -0.005em;
+  }
+
+  .credentials-distinction {
+    max-width: 1200px;
+    margin: 56px auto 0;
+    padding-top: 40px;
+    border-top: 1px solid rgba(168, 147, 106, 0.4);
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 48px;
+    align-items: baseline;
+  }
+
+  .cred-distinction-label {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--brass);
+    letter-spacing: 0.02em;
+  }
+
+  .cred-distinction-value {
+    font-family: 'EB Garamond', serif;
+    font-size: 22px;
+    color: var(--paper);
+    line-height: 1.4;
+    letter-spacing: -0.005em;
+  }
+
+  .cred-distinction-value strong {
+    color: var(--brass-soft);
+    font-weight: 500;
+  }
+
+  .portability {
+    text-align: center;
+    padding: 180px 56px;
+  }
+
+  .portability .section-label {
+    justify-content: center;
+  }
+
+  .portability .section-title {
+    margin: 0 auto 40px;
+    max-width: 24ch;
+  }
+
+  .portability-body {
+    font-size: 19px;
+    line-height: 1.7;
+    max-width: 680px;
+    margin: 0 auto;
+    color: var(--ink);
+  }
+
+  .portability-body strong {
+    font-weight: 500;
+    color: var(--brg);
+  }
+
+  /* ——— Foundation section ——— */
+  .foundation {
+    background: var(--paper-warm);
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    padding: 160px 56px;
+  }
+
+  /* ——— Compounding callout — full-bleed BRG ——— */
+  .compounding {
+    background: var(--brg);
+    color: var(--paper);
+    padding: 140px 56px;
+    text-align: center;
+  }
+
+  .compounding-label {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--brass-soft);
+    margin-bottom: 32px;
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .compounding-label::before,
+  .compounding-label::after {
+    content: '';
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--brass-soft);
+  }
+
+  .compounding-headline {
+    font-family: 'EB Garamond', serif;
+    font-size: clamp(36px, 5vw, 60px);
+    line-height: 1.15;
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    color: var(--paper);
+    margin: 0 auto 40px;
+    max-width: 22ch;
+  }
+
+  .compounding-headline em {
+    font-style: italic;
+    color: var(--brass-soft);
+  }
+
+  .compounding-body {
+    font-size: 19px;
+    line-height: 1.7;
+    color: var(--paper-warm);
+    opacity: 0.92;
+    max-width: 680px;
+    margin: 0 auto 40px;
+  }
+
+  .compounding-quote {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 22px;
+    line-height: 1.5;
+    color: var(--brass-soft);
+    max-width: 620px;
+    margin: 0 auto;
+  }
+
+  /* ——— Migration / getting started ——— */
+  .migration {
+    padding: 140px 56px;
+    background: var(--paper);
+  }
+
+  .migration-grid {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .migration-sources {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border-top: 1px solid var(--rule);
+  }
+
+  .migration-source {
+    padding: 18px 0;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+  }
+
+  .migration-source-from {
+    font-family: 'EB Garamond', serif;
+    font-size: 18px;
+    font-style: italic;
+    color: var(--brass);
+    width: 80px;
+    flex-shrink: 0;
+  }
+
+  .migration-source-to {
+    font-family: 'EB Garamond', serif;
+    font-size: 19px;
+    color: var(--brg);
+    font-weight: 500;
+  }
+
+  /* ——— Founder section ——— */
+  .founder {
+    background: var(--paper-warm);
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    padding: 120px 56px;
+  }
+
+  .founder-grid {
+    max-width: 900px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 64px;
+    align-items: start;
+  }
+
+  .founder-monogram {
+    font-family: 'EB Garamond', serif;
+    font-size: 96px;
+    color: var(--brg);
+    line-height: 1;
+    border-bottom: 1px solid var(--brass);
+    padding-bottom: 24px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+
+  .founder-monogram-meta {
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--brass);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-top: 16px;
+  }
+
+  .founder-name {
+    font-family: 'EB Garamond', serif;
+    font-size: 36px;
+    font-weight: 500;
+    color: var(--brg);
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+
+  .founder-role {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 18px;
+    color: var(--brass);
+    margin-bottom: 28px;
+  }
+
+  .founder-body {
+    font-size: 17px;
+    line-height: 1.7;
+    color: var(--ink);
+    margin-bottom: 16px;
+  }
+
+  /* ——— Sovereignty visual (SVG) ——— */
+  .sovereignty-visual-wrap {
+    margin: 56px 0 24px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .sovereignty-svg {
+    width: 100%;
+    max-width: 480px;
+    height: auto;
+    display: block;
+  }
+
+  .foundation-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 96px;
+    align-items: start;
+  }
+
+  .foundation-left .section-lead {
+    margin-bottom: 0;
+  }
+
+  .foundation-right {
+    position: relative;
+    padding-left: 48px;
+    border-left: 1px solid var(--brass);
+  }
+
+  .foundation-step {
+    padding: 28px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .foundation-step:first-child { padding-top: 0; }
+  .foundation-step:last-child { border-bottom: none; padding-bottom: 0; }
+
+  .foundation-step-label {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--brass);
+    margin-bottom: 10px;
+    letter-spacing: 0.02em;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+
+  .foundation-step-label::before {
+    content: '';
+    display: inline-block;
+    width: 18px;
+    height: 1px;
+    background: var(--brass);
+    margin-bottom: 4px;
+  }
+
+  .foundation-step-title {
+    font-family: 'EB Garamond', serif;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--brg);
+    margin-bottom: 10px;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+
+  .foundation-step-body {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--ink-muted);
+  }
+
+  .foundation-closer {
+    margin-top: 56px;
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 22px;
+    line-height: 1.5;
+    color: var(--brg-soft);
+    max-width: 720px;
+  }
+
+  .audience {
+    background: var(--paper-warm);
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .audience-list {
+    list-style: none;
+    margin-top: 40px;
+  }
+
+  .audience-list li {
+    font-family: 'EB Garamond', serif;
+    font-size: 22px;
+    line-height: 1.4;
+    color: var(--brg);
+    padding: 24px 0;
+    border-bottom: 1px solid var(--rule);
+    padding-left: 40px;
+    position: relative;
+  }
+
+  .audience-list li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--brass);
+    font-style: italic;
+  }
+
+  .audience-list li:last-child {
+    border-bottom: none;
+  }
+
+  /* ——— Audience CTA — interest mechanism ——— */
+  .audience-cta {
+    margin-top: 64px;
+    padding-top: 48px;
+    border-top: 1px solid var(--brass);
+    max-width: 640px;
+  }
+
+  .audience-cta-lead {
+    font-family: 'EB Garamond', serif;
+    font-size: 20px;
+    line-height: 1.5;
+    color: var(--brg);
+    margin-bottom: 24px;
+    letter-spacing: -0.005em;
+  }
+
+  .audience-cta-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'EB Garamond', serif;
+    font-size: 22px;
+    font-style: italic;
+    color: var(--brass);
+    text-decoration: none;
+    border-bottom: 1px solid var(--brass);
+    padding-bottom: 6px;
+    letter-spacing: -0.005em;
+    transition: color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .audience-cta-link:hover {
+    color: var(--brg);
+    border-bottom-color: var(--brg);
+  }
+
+  .audience-cta-arrow {
+    font-style: normal;
+    font-size: 18px;
+  }
+
+  .audience-cta-note {
+    margin-top: 28px;
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 14px;
+    font-style: italic;
+    color: var(--ink-muted);
+    letter-spacing: 0.01em;
+  }
+
+  footer {
+    background: var(--brg-deep);
+    color: var(--paper);
+    padding: 120px 56px 48px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .footer-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 80px;
+    padding-bottom: 80px;
+    border-bottom: 1px solid rgba(245, 241, 234, 0.15);
+  }
+
+  .footer-mark {
+    font-family: 'EB Garamond', serif;
+    font-size: 36px;
+    color: var(--paper);
+    margin-bottom: 20px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+  }
+
+  .footer-tagline {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 18px;
+    color: var(--brass-soft);
+    max-width: 34ch;
+    line-height: 1.5;
+  }
+
+  .footer-col-label {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--brass-soft);
+    margin-bottom: 20px;
+  }
+
+  .footer-col a, .footer-col p {
+    display: block;
+    color: var(--paper-warm);
+    text-decoration: none;
+    font-size: 15px;
+    line-height: 1.8;
+    opacity: 0.85;
+    transition: opacity 0.2s ease;
+  }
+
+  .footer-col a:hover { opacity: 1; }
+
+  .footer-bottom {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-top: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    color: var(--paper-warm);
+    opacity: 0.6;
+    letter-spacing: 0.02em;
+  }
+
+  .co-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .co-brand-rule {
+    width: 24px;
+    height: 1px;
+    background: var(--brass-soft);
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (max-width: 960px) {
+    nav { padding: 20px 24px; }
+    .nav-links { display: none; }
+    section { padding: 100px 24px; }
+    .hero { padding-top: 140px; }
+    .hero-origin { font-size: 16px; max-width: 100%; }
+    .pillars { grid-template-columns: 1fr; gap: 40px; }
+    .capabilities { grid-template-columns: 1fr; }
+    .sovereignty-grid { grid-template-columns: 1fr; gap: 48px; }
+    .credentials { padding: 60px 24px; }
+    .credentials-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+    .credentials-distinction { grid-template-columns: 1fr; gap: 12px; margin-top: 40px; padding-top: 32px; }
+    .cred-distinction-value { font-size: 18px; }
+    .footer-grid { grid-template-columns: 1fr; gap: 48px; }
+    .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+    .query { grid-template-columns: 40px 1fr; gap: 20px; }
+    .query-text { font-size: 20px; }
+    .problem-body { font-size: 22px; }
+    .portability { padding: 120px 24px; }
+    .foundation { padding: 100px 24px; }
+    .foundation-grid { grid-template-columns: 1fr; gap: 48px; }
+    .foundation-right { padding-left: 28px; }
+    .foundation-closer { font-size: 20px; }
+    .compounding { padding: 100px 24px; }
+    .compounding-headline { font-size: 32px; }
+    .compounding-quote { font-size: 19px; }
+    .migration { padding: 100px 24px; }
+    .migration-grid { grid-template-columns: 1fr; gap: 40px; }
+    .founder { padding: 80px 24px; }
+    .founder-grid { grid-template-columns: 1fr; gap: 32px; }
+    .founder-monogram { font-size: 72px; }
+    .founder-name { font-size: 28px; }
+    .sovereignty-visual-wrap { margin: 32px 0 16px; }
+    .house-rules { grid-template-columns: 1fr; gap: 12px; padding: 24px; }
+    .qa { grid-template-columns: 1fr; gap: 8px; padding: 20px 0; }
+    .qa-q { font-size: 19px; }
+    .qa-a { font-size: 15px; }
+    .sovereignty-tiers-intro { font-size: 16px; }
+    .audience-cta { margin-top: 48px; padding-top: 36px; }
+    .audience-cta-lead { font-size: 18px; }
+    .audience-cta-link { font-size: 19px; }
+  }
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="mark">
+    <span class="mark-dot"></span>
+    Steward
+  </div>
+  <div class="nav-links">
+    <a href="#memory">In Practice</a>
+    <a href="#sovereignty">Swiss Sovereignty</a>
+    <a href="#foundation">Foundation</a>
+    <a href="#audience">Who It's For</a>
+  </div>
+  <a href="mailto:contact@ana-wealth.ch?subject=Steward%20%E2%80%94%20interest" class="nav-cta">Tell us about your office</a>
+</nav>
+
+<!-- ——— Hero ——— -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-label">
+      <span class="hero-label-rule"></span>
+      Built in Switzerland · For European family offices
+    </div>
+    <h1 class="hero-headline">
+      Modern AI for your office.<br>
+      With the <em>sovereignty</em><br>
+      your work demands.
+    </h1>
+    <p class="hero-sub">
+      A private workspace where your team adopts modern AI without the trade-off. Hosted in Switzerland. Built so that no one outside your office — including our own staff — can see your data, even when the system is using it. For the family office that cannot afford to be the one that leaks.
+    </p>
+    <div class="hero-meta">
+      <span class="hero-meta-rule"></span>
+      <span>A joint product of ANA Wealth (Zug) &amp; PHOENIQS</span>
+    </div>
+    <p class="hero-origin">
+      Built first for our own use. Now offered to a small number of family offices where the fit is clear — <em>not built for everyone, and that's deliberate</em>.
+    </p>
+  </div>
+</section>
+
+<!-- ——— Problem ——— -->
+<section class="problem">
+  <div class="container-narrow">
+    <div class="problem-body reveal">
+      <p>
+        Running a small family office means making technology decisions you cannot afford to get wrong. The sensible options are too risky — feeding client data to consumer AI is a non-starter. The "safe" options on offer are reassuring on paper but the same on the inside: a provider with administrators who can technically see your data, hosted in jurisdictions you do not control, with policies you have to take on trust.
+      </p>
+      <p>
+        So most directors do nothing. The team keeps drafting from scratch, briefing from scratch, searching for that document from scratch. The work piles up. The technology question gets postponed another year.
+      </p>
+      <div class="problem-quote">
+        Meanwhile, what the office knows lives <span class="accent">everywhere</span> —<br/>
+        and the people who knew it best <span class="accent">leave</span>.
+      </div>
+      <p>
+        The trade-off the industry has offered until now — <em>capability or confidentiality, pick one</em> — is not a real trade-off. It exists because nobody has built the alternative.
+      </p>
+      <p>
+        We have.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ——— Swiss credentials strip ——— -->
+<section class="credentials">
+  <div class="credentials-grid">
+    <div class="cred">
+      <div class="cred-label">Hosted in</div>
+      <div class="cred-value">Zurich &amp; Geneva data centres</div>
+    </div>
+    <div class="cred">
+      <div class="cred-label">Governed by</div>
+      <div class="cred-value">Swiss Federal Data Protection Act (FADP)</div>
+    </div>
+    <div class="cred">
+      <div class="cred-label">Data residency</div>
+      <div class="cred-value">Never leaves Switzerland by default</div>
+    </div>
+    <div class="cred">
+      <div class="cred-label">Operated by</div>
+      <div class="cred-value">A Swiss team, accountable to Swiss law</div>
+    </div>
+  </div>
+  <div class="credentials-distinction">
+    <div class="cred-distinction-label">And, going beyond</div>
+    <div class="cred-distinction-value">
+      <strong>No one sees your data. Not even us.</strong> The infrastructure is built so that our own engineers cannot read your documents or your team's queries — not by policy, but by how the hardware is designed.
+    </div>
+  </div>
+</section>
+
+<!-- ——— Portability ——— -->
+<section class="portability">
+  <div class="container-narrow">
+    <div class="section-label reveal">Your Data, Portable Forever</div>
+    <h2 class="section-title reveal">We build the lens. You own <em>the truth</em>.</h2>
+    <p class="portability-body reveal">
+      Everything Steward produces lives in your Swiss tenant as open files. Documents stay in their original formats. Notes are markdown. Metadata is JSON and SQLite. The knowledge graph is a folder of wiki-style pages with backlinks. <strong>At any time, you can export your entire workspace</strong> — every document, every note, every extracted entity, every audit log entry — and walk away with something that works in Obsidian, VS Code, or any future tool that reads files.
+    </p>
+  </div>
+</section>
+
+<!-- ——— Compounding callout ——— -->
+<section class="compounding">
+  <div class="container">
+    <div class="compounding-label reveal">From Static to Compounding</div>
+    <h2 class="compounding-headline reveal">Today, every research note dies the day it is filed. With Steward, <em>every note earns interest</em>.</h2>
+    <p class="compounding-body reveal">
+      Family office work today is episodic. A research note is written, sent, archived, forgotten. A meeting happens, minutes are filed, the rationale lives in someone's head. Each piece of work starts from zero. Steward changes this. Every document ingested, every decision captured, every conversation logged enriches the foundation that the next piece of work draws on. Knowledge compounds the way capital compounds — small additions over time, each one earning interest on every prior addition.
+    </p>
+    <p class="compounding-quote reveal">
+      In two years, your team is reasoning over the entire firm's history.<br/>In five years, you've built something that holds up.
+    </p>
+  </div>
+</section>
+
+<!-- ——— Foundation layer — two use cases that follow from compounding ——— -->
+<section id="foundation" class="foundation">
+  <div class="foundation-grid">
+    <div class="foundation-left">
+      <div class="section-label reveal">What Becomes Possible</div>
+      <h2 class="section-title reveal">And once that foundation exists, two things become <em>easy</em>.</h2>
+      <p class="section-lead reveal">
+        That is why directors choose Steward as their office's first serious technology adoption. The data, captured once, in a form they own, becomes the ground on which everything else rests.
+      </p>
+    </div>
+
+    <div class="foundation-right reveal">
+      <div class="foundation-step">
+        <div class="foundation-step-label">Use case one</div>
+        <h3 class="foundation-step-title">A central agent for every task — one source of truth for every user</h3>
+        <p class="foundation-step-body">
+          Today, every member of your team has their own Claude or ChatGPT account, asking versions of the same questions in isolation. Nobody sees what anyone else asked. Nobody benefits from what anyone else learned. Five subscriptions, five fragmented memories, none of them grounded in your office's actual work.
+        </p>
+        <p class="foundation-step-body" style="margin-top: 14px;">
+          With Steward, every staff member, every principal, every authorised advisor talks to the same workspace, draws from the same knowledge, sees the same audit trail. Every question and every answer becomes part of what the office knows. One agent, one truth, available to everyone permitted to ask.
+        </p>
+      </div>
+      <div class="foundation-step">
+        <div class="foundation-step-label">Use case two</div>
+        <h3 class="foundation-step-title">A future-proof platform for every system you'll want next</h3>
+        <p class="foundation-step-body">
+          Portfolio reporting. Consolidated dashboards. Tax-lot tracking. Philanthropic management. Compliance tooling. Whatever the family office wants to add in three or five years — each new initiative reads from the same Steward foundation. No re-ingestion. No re-migration. No vendor lock-in at the foundation layer.
+        </p>
+      </div>
+
+      <p class="foundation-closer">
+        A technology strategy for a family office is not a single decision. It is a sequence of them. Steward is the one that makes every subsequent decision easier.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ——— Hero use case — what this looks like in practice ——— -->
+<section id="memory" class="hero-use-case">
+  <div class="container">
+    <div class="section-label reveal">What This Looks Like</div>
+    <h2 class="section-title reveal">The questions your team is asking every day, finally <em>answerable</em> in seconds.</h2>
+    <p class="section-lead reveal">
+      These are the questions nobody in your office can answer in sixty seconds today. The answer lives across fifteen years of correspondence, a dozen memos, three advisor files, and the memory of a staff member who retired last spring. Steward answers them with citations to the actual source documents — the work your team has been doing all along, finally usable.
+    </p>
+
+    <div class="queries reveal">
+      <div class="query">
+        <div class="query-num">01</div>
+        <div class="query-text">"Why did we pass on Sequoia Global Growth III — and what would change our mind on the next vintage?"</div>
+      </div>
+      <div class="query">
+        <div class="query-num">02</div>
+        <div class="query-text">"Which advisors were involved when we set up the cross-border holding structure — and what reservations did our tax counsel raise about the Liechtenstein interface?"</div>
+      </div>
+      <div class="query">
+        <div class="query-num">03</div>
+        <div class="query-text">"What commitments have we made to Anders over the last three years on the direct-deal track, and what's still outstanding?"</div>
+      </div>
+      <div class="query">
+        <div class="query-num">04</div>
+        <div class="query-text">"Prepare me for tomorrow's IC meeting — what's outstanding from last quarter, what has changed, what needs a decision?"</div>
+      </div>
+    </div>
+
+    <p class="how-it-works reveal">
+      This works because Steward reads each document as it arrives and quietly maps how the people, decisions, and dates in your office connect — so when you ask a question, it can <em>follow the connections, not just search the words</em>.
+    </p>
+
+    <p class="hero-use-case-footer reveal">
+      The first time your team asks a question that would have taken half a day of searching — and gets a cited answer in sixty seconds — <em>that</em> is the moment Steward earns its place.
+    </p>
+  </div>
+</section>
+
+<!-- ——— Capabilities ——— -->
+<section>
+  <div class="container">
+    <div class="section-label reveal">What Steward Does</div>
+    <h2 class="section-title reveal">Five capabilities. <em>One workspace</em>, built to compound.</h2>
+    <p class="section-lead reveal">
+      Each works on its own. Together, they make Steward the medium in which your office's work happens — and the foundation everything you build later sits on.
+    </p>
+
+    <div class="house-rules reveal">
+      <div class="house-rules-label">Underneath all five</div>
+      <div class="house-rules-body">
+        <strong>House Rules.</strong> A short, human-edited document where the director captures how the firm actually works — voice and tone for each kind of correspondence, principal preferences, standard disclaimers, topics that are off-limits, who signs off on what. Every Steward agent reads House Rules before drafting anything. Set it once. Change it when the firm changes. Every output, forever after, respects it.
+      </div>
+    </div>
+
+    <div class="capabilities reveal">
+      <div class="capability">
+        <div class="capability-num">01</div>
+        <h3 class="capability-title">Office Memory — grounded in your record</h3>
+        <p class="capability-body">
+          Ask anything that lives in your office's documents, decisions, and prior conversations. Steward reads across your permitted corpus and answers with citations to the actual source — memos, fund-manager letters, IC packs, advisor correspondence, statements, minutes. Your team's knowledge becomes searchable, not just storable, and every answer can be promoted into the office's standing memory.
+        </p>
+      </div>
+      <div class="capability">
+        <div class="capability-num">02</div>
+        <h3 class="capability-title">General-purpose AI, in confidence</h3>
+        <p class="capability-body">
+          The everyday questions your team would otherwise put to Claude or ChatGPT — research, drafting, summarising, structuring — answered inside your sovereign workspace. The same model quality the consumer products offer, with the data protections you require. No queries leave the firm by default. No conversation enters anyone's training set. Your team adopts AI without asking the security question every time.
+        </p>
+      </div>
+      <div class="capability">
+        <div class="capability-num">03</div>
+        <h3 class="capability-title">Agents that run tasks on schedule</h3>
+        <p class="capability-body">
+          Steward operates not only as an assistant but as an agent — it can take on recurring work and run it on a schedule. Pull the latest fund-manager letters and summarise them by Monday morning. Reconcile the quarterly custodian statement against the office ledger. Surface anything overdue from the IC pack ahead of every meeting. Set the task once. The work happens, with audit trail, until you change your mind.
+        </p>
+      </div>
+      <div class="capability">
+        <div class="capability-num">04</div>
+        <h3 class="capability-title">A knowledge graph that connects everything</h3>
+        <p class="capability-body">
+          Underneath every answer, a living map of your office: people, structures, matters, advisors, fund GPs, properties, decisions — all linked by how they touch each other. The graph is what lets Steward navigate your records like a long-serving staff member rather than searching them like a database. Visible in the workspace, exportable as your own folder of wiki pages — yours regardless of where the rest of your stack goes.
+        </p>
+      </div>
+      <div class="capability capability-wide capability-substrate">
+        <div class="capability-num">05</div>
+        <span class="capability-tag">The platform layer</span>
+        <h3 class="capability-title">A foundation you can build on</h3>
+        <p class="capability-body">
+          Steward is the foundation, not the ceiling. Portfolio reporting, consolidated dashboards, custom workflows for your particular family — anything you'll want to add over the next five years reads from the same sovereign substrate. Build it yourselves on the same files Steward has been gathering all along, or commission us to build it for you. Either way, no re-ingestion, no re-migration, no vendor lock-in at the foundation layer. The technology decision you make once that makes every subsequent decision easier.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ——— Sovereignty, Swiss-specific ——— -->
+<section id="sovereignty" class="problem">
+  <div class="container">
+    <div class="section-label reveal">The Five Questions Every Director Asks</div>
+    <h2 class="section-title reveal">Most providers ask you to <em>trust</em> them. We have built Steward so you don't have to.</h2>
+
+    <div class="qa-grid reveal">
+      <div class="qa">
+        <div class="qa-q">Where does my data live?</div>
+        <div class="qa-a">In Switzerland. In data centres in Zurich and Geneva, operated by a Swiss team, governed by Swiss law. It does not leave the country.</div>
+      </div>
+      <div class="qa">
+        <div class="qa-q">Can your staff read it?</div>
+        <div class="qa-a">No. The system is built so we cannot — even if we wanted to, even if we were ordered to. Your documents and your team's queries are unlocked only inside protected hardware that no one else, including our own engineers, has access to.</div>
+      </div>
+      <div class="qa">
+        <div class="qa-q">What if a court orders you to hand my data over?</div>
+        <div class="qa-a">We can hand over what we hold. We hold encrypted files we cannot decrypt. The Swiss courts that govern us are not subject to American or other foreign demands; the U.S. CLOUD Act does not reach Swiss-owned infrastructure.</div>
+      </div>
+      <div class="qa">
+        <div class="qa-q">Who holds the encryption keys?</div>
+        <div class="qa-a">You do. Your tenant administrator generates the keys, holds them, and can rotate or revoke them. We never receive a copy. This is the default, not a premium tier.</div>
+      </div>
+      <div class="qa">
+        <div class="qa-q">What happens when I want to leave?</div>
+        <div class="qa-a">You export everything — every document, every note, every audit log entry — as ordinary files in standard formats. No re-licensing. No vendor handover process. Walk away with what is yours.</div>
+      </div>
+    </div>
+
+    <div class="sovereignty-tiers-wrap reveal">
+      <div class="sovereignty-tiers-intro">
+        Three ways your team uses AI inside this confidential workspace — chosen per folder, per workspace, or per query.
+      </div>
+      <div class="sovereignty-tiers">
+        <div class="tier">
+          <div class="tier-label">Default</div>
+          <div class="tier-title">Frontier model, under contract</div>
+          <div class="tier-body">Claude or GPT via our enterprise agreements. The query passes through our confidential gateway under no-training and zero-retention terms.</div>
+        </div>
+        <div class="tier">
+          <div class="tier-label">Per-folder</div>
+          <div class="tier-title">Local model, never leaves Switzerland</div>
+          <div class="tier-body">For materials where even contractual protection is not enough: an open-source model runs on PHOENIQS hardware in your tenant. Nothing leaves the country.</div>
+        </div>
+        <div class="tier">
+          <div class="tier-label">By arrangement</div>
+          <div class="tier-title">On your own hardware</div>
+          <div class="tier-body">Same product, deployed on your own infrastructure. For families whose posture or contracts require complete physical custody.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ——— Migration / Getting Started ——— -->
+<section class="migration">
+  <div class="migration-grid">
+    <div>
+      <div class="section-label reveal">From Day One</div>
+      <h2 class="section-title reveal">Bring your data <em>from everywhere</em>.</h2>
+      <p class="section-lead reveal">
+        We know where your knowledge actually lives — across files, drives, inboxes, advisor portals, WhatsApp threads, and in the heads of your team. Steward is built for that reality. Drag and drop, point at a folder, forward an email, paste a thread. The workspace ingests, organises, and indexes automatically. Most family offices are productive within the first afternoon.
+      </p>
+      <p class="section-lead reveal" style="margin-top: 24px;">
+        For larger historical migrations — decades of correspondence, scanned legal archives, multi-source consolidations — we run a guided onboarding alongside your team. You are never doing this alone.
+      </p>
+    </div>
+
+    <div class="migration-sources reveal">
+      <div class="migration-source"><span class="migration-source-from">From</span><span class="migration-source-to">Files and folders on a shared drive</span></div>
+      <div class="migration-source"><span class="migration-source-from">From</span><span class="migration-source-to">Outlook, Gmail, or any IMAP archive</span></div>
+      <div class="migration-source"><span class="migration-source-from">From</span><span class="migration-source-to">WhatsApp, Signal, Telegram threads</span></div>
+      <div class="migration-source"><span class="migration-source-from">From</span><span class="migration-source-to">Scanned PDFs and notarised documents</span></div>
+      <div class="migration-source"><span class="migration-source-from">From</span><span class="migration-source-to">Existing CRMs, document vaults, advisor portals</span></div>
+      <div class="migration-source"><span class="migration-source-from">From</span><span class="migration-source-to">Handwritten notes and physical archives</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ——— Who it's for ——— -->
+<section id="audience" class="audience">
+  <div class="container-narrow">
+    <div class="section-label reveal">Who Steward Is For</div>
+    <h2 class="section-title reveal">Steward is <em>not for everyone</em>.</h2>
+    <p class="section-lead reveal">
+      We built Steward for ANA Wealth's own family-office work, and we are extending it selectively — to a small number of offices where the fit is clear. The sweet spot is the 3-to-20-person family office anywhere in Europe, with the strongest fit at Swiss-anchored offices where one director makes the technology decisions and has to defend them for years.
+    </p>
+
+    <ul class="audience-list reveal">
+      <li>Single-family offices across Europe</li>
+      <li>Multi-family offices serving a handful of families with dedicated teams</li>
+      <li>Directors evaluating their first serious AI adoption — and who want to get it right</li>
+      <li>Offices approaching a generational handover or key staff retirement</li>
+      <li>Teams who want to automate the work that should not need doing twice</li>
+    </ul>
+
+    <div class="audience-cta reveal">
+      <p class="audience-cta-lead">
+        If you recognise yourself in this, write a short note about your office — what you do, where you sit, what you've tried.
+      </p>
+      <a href="mailto:contact@ana-wealth.ch?subject=Steward%20%E2%80%94%20interest" class="audience-cta-link">
+        contact@ana-wealth.ch
+        <span class="audience-cta-arrow">→</span>
+      </a>
+      <p class="audience-cta-note">We read each one personally. Replies within a few days.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ——— Founder ——— -->
+<section class="founder">
+  <div class="founder-grid">
+    <div class="reveal">
+      <div class="founder-monogram">AB</div>
+      <div class="founder-monogram-meta">The founder</div>
+    </div>
+    <div class="reveal">
+      <h3 class="founder-name">Ariel Barack</h3>
+      <p class="founder-role">Founder, Steward</p>
+      <p class="founder-body">
+        Ariel holds a degree in computer science and has spent the last decade running family offices and wealth management firms in Switzerland. Steward is built by someone who has lived in both worlds — the engineering one and the family office one — and knows where they should meet.
+      </p>
+      <p class="founder-body">
+        He built Steward first because he needed it for his own work. He is now extending it to a small group of family offices who recognise the same problem and want a sovereign, Swiss-built solution to it.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ——— Footer / Co-brand ——— -->
+<footer id="contact">
+  <div class="footer-grid">
+    <div>
+      <div class="footer-mark">Steward<span style="color: var(--brass);">.</span></div>
+      <p class="footer-tagline">
+        Held in trust. Held in memory.
+      </p>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-label">Built By</div>
+      <a href="#">ANA Wealth · Zug</a>
+      <a href="#">PHOENIQS · Switzerland</a>
+      <p style="margin-top: 12px; font-size: 14px;">A Swiss joint venture</p>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-label">Contact</div>
+      <a href="mailto:contact@ana-wealth.ch?subject=Steward%20%E2%80%94%20interest">contact@ana-wealth.ch</a>
+      <p style="margin-top: 12px; font-size: 14px;">We reply within a few days.</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="co-brand">
+      <span>A joint product of ANA Wealth</span>
+      <span class="co-brand-rule"></span>
+      <span>PHOENIQS</span>
+    </div>
+    <div>© 2026 · Hosted in Switzerland</div>
+  </div>
+</footer>
+
+<script>
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 20) {
+      nav.classList.add('scrolled');
+    } else {
+      nav.classList.remove('scrolled');
+    }
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -80px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
