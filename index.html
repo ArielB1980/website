@@ -3,292 +3,1472 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ana Holding — Private Trading Company</title>
+<title>Steward — A private workspace for closed groups</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap');
-
   :root {
-    --navy: #14213D;
-    --dark-bg: #0B1120;
-    --brass: #B08D57;
-    --brass-light: #D4B87A;
-    --brass-pale: #E8D5A8;
-    --white: #FFFFFF;
-    --mid-gray: #8E8E93;
+    --brg: #0B3B2E;
+    --brg-deep: #072A20;
+    --brg-soft: #1E5345;
+    --paper: #F5F1EA;
+    --paper-warm: #EFE9DE;
+    --ink: #0B3B2E;
+    --ink-muted: #5A6E66;
+    --brass: #A8936A;
+    --brass-soft: #C4B48A;
+    --rule: #D8D0BF;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
 
   body {
-    font-family: 'Inter', -apple-system, sans-serif;
-    background: linear-gradient(135deg, var(--navy) 0%, var(--dark-bg) 100%);
-    color: var(--white);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 17px;
+    line-height: 1.6;
+    font-weight: 400;
     -webkit-font-smoothing: antialiased;
-    padding: 40px 24px;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
   }
 
-  .container {
-    text-align: center;
-    max-width: 560px;
-  }
-
-  .badge {
-    display: inline-block;
-    border: 1px solid rgba(176,141,87,0.4);
-    color: var(--brass-light);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    padding: 8px 20px;
-    border-radius: 2px;
-    margin-bottom: 40px;
-  }
-
-  h1 {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: clamp(42px, 6vw, 72px);
-    font-weight: 700;
-    letter-spacing: 6px;
-    line-height: 1.05;
-    margin-bottom: 16px;
-  }
-
-  h1 span {
-    display: block;
-    background: linear-gradient(90deg, var(--brass), var(--brass-light));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .tagline {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: 18px;
-    color: var(--brass-pale);
-    font-style: italic;
-    margin-bottom: 8px;
-  }
-
-  .location {
-    font-size: 13px;
-    color: var(--mid-gray);
-    letter-spacing: 1px;
-    margin-bottom: 48px;
-  }
-
-  .divider {
-    width: 60px;
-    height: 2px;
-    background: linear-gradient(90deg, var(--brass), var(--brass-light));
-    margin: 0 auto 48px;
-  }
-
-  .description {
-    font-size: 16px;
-    line-height: 1.75;
-    color: rgba(255,255,255,0.65);
-    margin-bottom: 48px;
-  }
-
-  .contact-btn {
-    display: inline-block;
-    font-family: 'Inter', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--navy);
-    background: linear-gradient(90deg, var(--brass), var(--brass-light));
-    padding: 16px 40px;
-    border-radius: 2px;
-    text-decoration: none;
-    transition: opacity 0.2s ease, transform 0.2s ease;
-    cursor: pointer;
-    border: none;
-  }
-
-  .contact-btn:hover {
-    opacity: 0.9;
-    transform: translateY(-2px);
-  }
-
-  /* Contact form overlay */
-  .overlay {
-    display: none;
+  body::before {
+    content: '';
     position: fixed;
     inset: 0;
-    background: rgba(11,17,32,0.85);
-    z-index: 100;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(168, 147, 106, 0.03) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(11, 59, 46, 0.02) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
   }
 
-  .overlay.active { display: flex; }
+  .serif { font-family: 'EB Garamond', serif; font-weight: 400; }
+  .italic { font-style: italic; }
 
-  .form-card {
-    background: var(--navy);
-    border-top: 3px solid var(--brass);
-    border-radius: 4px;
-    padding: 40px;
-    width: 100%;
-    max-width: 460px;
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    padding: 28px 56px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+    background: rgba(245, 241, 234, 0.8);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.4s ease;
+  }
+  nav.scrolled { border-bottom-color: var(--rule); }
+
+  .mark {
+    font-family: 'EB Garamond', serif;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--brg);
+    letter-spacing: 0.02em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .mark-dot {
+    display: inline-block;
+    width: 7px; height: 7px;
+    background: var(--brass);
+    border-radius: 50%;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 40px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink-muted);
+    letter-spacing: 0.02em;
+  }
+  .nav-links a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  .nav-links a:hover { color: var(--brg); }
+
+  .nav-cta {
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 20px;
+    border: 1px solid var(--brg);
+    color: var(--brg);
+    background: transparent;
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    transition: all 0.25s ease;
+    border-radius: 2px;
+  }
+  .nav-cta:hover {
+    background: var(--brg);
+    color: var(--paper);
+  }
+
+  section {
+    position: relative;
+    z-index: 1;
+    padding: 160px 56px;
+  }
+  .container { max-width: 1200px; margin: 0 auto; }
+  .container-narrow { max-width: 840px; margin: 0 auto; }
+
+  /* ——— Hero ——— */
+  .hero {
+    min-height: 100vh;
+    padding-top: 200px;
+    padding-bottom: 120px;
+    display: flex;
+    align-items: center;
     position: relative;
   }
 
-  .form-card h2 {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: 24px;
-    margin-bottom: 8px;
-  }
-
-  .form-card p {
-    font-size: 14px;
-    color: rgba(255,255,255,0.5);
-    margin-bottom: 28px;
-  }
-
-  .close-btn {
-    position: absolute;
-    top: 16px;
-    right: 20px;
-    background: none;
-    border: none;
-    color: var(--mid-gray);
-    font-size: 24px;
-    cursor: pointer;
-  }
-
-  .close-btn:hover { color: var(--white); }
-
-  .form-group {
-    margin-bottom: 16px;
-  }
-
-  .form-group label {
-    display: block;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 2px;
+  .hero-label {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--brass-light);
-    margin-bottom: 6px;
+    color: var(--brass);
+    margin-bottom: 48px;
+    opacity: 0;
+    animation: fade-up 0.9s ease forwards;
+    display: flex;
+    align-items: center;
+    gap: 16px;
   }
 
-  .form-group input,
-  .form-group textarea {
-    width: 100%;
-    padding: 12px 16px;
-    background: var(--dark-bg);
-    border: 1px solid rgba(176,141,87,0.25);
-    border-radius: 2px;
-    color: var(--white);
-    font-family: 'Inter', sans-serif;
-    font-size: 14px;
-    outline: none;
-    transition: border-color 0.2s;
+  .hero-label-rule {
+    width: 40px; height: 1px;
+    background: var(--brass);
   }
 
-  .form-group input:focus,
-  .form-group textarea:focus {
-    border-color: var(--brass);
+  .hero-headline {
+    font-family: 'EB Garamond', serif;
+    font-size: clamp(48px, 7vw, 92px);
+    line-height: 1.02;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    color: var(--brg);
+    margin-bottom: 44px;
+    max-width: 18ch;
+    opacity: 0;
+    animation: fade-up 0.9s ease 0.15s forwards;
   }
 
-  .form-group textarea {
-    height: 100px;
-    resize: vertical;
+  .hero-headline em {
+    font-style: italic;
+    color: var(--brg-soft);
   }
 
-  .submit-btn {
-    width: 100%;
-    margin-top: 8px;
-  }
-
-  .success-msg {
-    display: none;
-    text-align: center;
-    padding: 20px 0;
-  }
-
-  .success-msg h3 {
-    font-family: 'Playfair Display', serif;
+  .hero-sub {
     font-size: 20px;
-    margin-bottom: 8px;
-    color: var(--brass-light);
+    line-height: 1.55;
+    max-width: 660px;
+    color: var(--ink);
+    margin-bottom: 72px;
+    opacity: 0;
+    animation: fade-up 0.9s ease 0.3s forwards;
   }
 
-  .success-msg p {
-    color: rgba(255,255,255,0.5);
-    font-size: 14px;
+  .hero-meta {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    font-size: 13px;
+    color: var(--ink-muted);
+    letter-spacing: 0.04em;
+    opacity: 0;
+    animation: fade-up 0.9s ease 0.45s forwards;
+  }
+  .hero-meta-rule { width: 48px; height: 1px; background: var(--brass); }
+
+  .hero-origin {
+    margin-top: 28px;
+    font-family: 'EB Garamond', serif;
+    font-size: 17px;
+    font-style: italic;
+    color: var(--ink-muted);
+    line-height: 1.55;
+    max-width: 620px;
+    letter-spacing: -0.005em;
+    opacity: 0;
+    animation: fade-up 0.9s ease 0.6s forwards;
+  }
+  .hero-origin em { color: var(--brass); font-style: italic; }
+
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
-  .footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    text-align: center;
-    padding: 16px;
-    font-size: 11px;
-    color: rgba(255,255,255,0.2);
-    letter-spacing: 2px;
+  /* ——— Section primitives ——— */
+  .section-label {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
+    color: var(--brass);
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .section-label::before {
+    content: '';
+    display: inline-block;
+    width: 32px; height: 1px;
+    background: var(--brass);
+  }
+
+  .section-title {
+    font-family: 'EB Garamond', serif;
+    font-size: clamp(36px, 4.5vw, 56px);
+    line-height: 1.1;
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    color: var(--brg);
+    margin-bottom: 40px;
+    max-width: 22ch;
+  }
+
+  .section-title em { font-style: italic; color: var(--brg-soft); }
+
+  .section-lead {
+    font-size: 19px;
+    line-height: 1.6;
+    color: var(--ink);
+    max-width: 680px;
+    margin-bottom: 64px;
+  }
+
+  /* ——— Problem ——— */
+  .problem {
+    background: var(--paper-warm);
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .problem-body {
+    font-family: 'EB Garamond', serif;
+    font-size: 26px;
+    line-height: 1.5;
+    font-weight: 400;
+    color: var(--brg);
+    max-width: 780px;
+    margin: 0 auto;
+    text-align: left;
+  }
+
+  .problem-body p { margin-bottom: 28px; }
+  .problem-body p:last-child { margin-bottom: 0; }
+  .problem-body .accent { font-style: italic; color: var(--brg-soft); }
+
+  .problem-quote {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 22px;
+    color: var(--brass);
+    padding-left: 28px;
+    border-left: 1px solid var(--brass);
+    margin: 40px 0;
+    line-height: 1.5;
+  }
+
+  /* ——— Credentials strip ——— */
+  .credentials {
+    background: var(--brg-deep);
+    color: var(--paper);
+    padding: 80px 56px;
+    border-top: 1px solid rgba(168, 147, 106, 0.2);
+  }
+
+  .credentials-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 48px;
+  }
+
+  .cred {
+    border-left: 1px solid rgba(168, 147, 106, 0.3);
+    padding-left: 24px;
+  }
+
+  .cred-label {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--brass-soft);
+    margin-bottom: 10px;
+    letter-spacing: 0.02em;
+  }
+
+  .cred-value {
+    font-family: 'EB Garamond', serif;
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--paper);
+    line-height: 1.3;
+    letter-spacing: -0.005em;
+  }
+
+  .credentials-distinction {
+    max-width: 1200px;
+    margin: 56px auto 0;
+    padding-top: 40px;
+    border-top: 1px solid rgba(168, 147, 106, 0.4);
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 48px;
+    align-items: baseline;
+  }
+
+  .cred-distinction-label {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--brass);
+    letter-spacing: 0.02em;
+  }
+
+  .cred-distinction-value {
+    font-family: 'EB Garamond', serif;
+    font-size: 22px;
+    color: var(--paper);
+    line-height: 1.4;
+    letter-spacing: -0.005em;
+  }
+
+  .cred-distinction-value strong {
+    color: var(--brass-soft);
+    font-weight: 500;
+  }
+
+  /* ——— Personas (the centerpiece) ——— */
+  .personas {
+    padding-top: 180px;
+  }
+
+  .persona-intro {
+    max-width: 780px;
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 20px;
+    color: var(--brg-soft);
+    line-height: 1.5;
+    margin-top: -24px;
+    margin-bottom: 72px;
+    letter-spacing: -0.005em;
+  }
+
+  .persona-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--rule);
+    border-left: 1px solid var(--rule);
+  }
+
+  .persona {
+    padding: 56px 48px;
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    transition: background 0.25s ease;
+    position: relative;
+  }
+
+  .persona:hover { background: var(--paper-warm); }
+
+  .persona-num {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--brass);
+    margin-bottom: 24px;
+  }
+
+  .persona-name {
+    font-family: 'EB Garamond', serif;
+    font-size: 32px;
+    line-height: 1.15;
+    font-weight: 500;
+    color: var(--brg);
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+
+  .persona-tag {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--brass);
+    margin-bottom: 28px;
+    line-height: 1.4;
+  }
+
+  .persona-fields {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px;
+    margin-bottom: 32px;
+  }
+
+  .persona-field {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 20px;
+    align-items: baseline;
+    padding-top: 14px;
+    border-top: 1px solid var(--rule);
+  }
+
+  .persona-field:first-child {
+    border-top: 1px solid var(--brass);
+  }
+
+  .persona-field-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--brass);
+    line-height: 1.3;
+  }
+
+  .persona-field-value {
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--ink);
+  }
+
+  .persona-question {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 19px;
+    line-height: 1.45;
+    color: var(--brg);
+    margin-top: auto;
+    padding: 24px 0 28px;
+    border-top: 1px solid var(--rule);
+    letter-spacing: -0.005em;
+  }
+
+  .persona-question::before {
+    content: '"';
+    color: var(--brass);
+    margin-right: 2px;
+  }
+
+  .persona-question::after {
+    content: '"';
+    color: var(--brass);
+    margin-left: 2px;
+  }
+
+  .persona-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'EB Garamond', serif;
+    font-size: 17px;
+    font-style: italic;
+    color: var(--brass);
+    text-decoration: none;
+    border-bottom: 1px solid var(--brass);
+    padding-bottom: 4px;
+    width: fit-content;
+    transition: color 0.2s ease, border-color 0.2s ease;
+    letter-spacing: -0.005em;
+  }
+
+  .persona-cta:hover {
+    color: var(--brg);
+    border-bottom-color: var(--brg);
+  }
+
+  .persona-cta-arrow { font-style: normal; font-size: 14px; }
+
+  /* ——— Capabilities ——— */
+  .capabilities {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    margin-top: 48px;
+    border-top: 1px solid var(--rule);
+    border-left: 1px solid var(--rule);
+  }
+
+  .capability {
+    padding: 48px 44px;
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    transition: background 0.3s ease;
+    position: relative;
+  }
+
+  .capability:hover { background: var(--paper-warm); }
+
+  .capability-wide {
+    grid-column: 1 / -1;
+    padding: 56px 56px;
+  }
+
+  .capability-wide .capability-title { font-size: 30px; margin-bottom: 18px; }
+  .capability-wide .capability-body { font-size: 16px; max-width: 780px; }
+
+  .capability-wide.capability-substrate {
+    background: var(--paper-warm);
+  }
+  .capability-wide.capability-substrate:hover { background: var(--paper); }
+
+  .capability-tag {
+    display: inline-block;
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 13px;
+    color: var(--brass);
+    letter-spacing: 0.04em;
+    margin-bottom: 12px;
+    padding: 4px 12px;
+    border: 1px solid var(--brass);
+    border-radius: 2px;
+  }
+
+  .capability-num {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--brass);
+    margin-bottom: 24px;
+  }
+
+  .capability-title {
+    font-family: 'EB Garamond', serif;
+    font-size: 26px;
+    line-height: 1.2;
+    font-weight: 500;
+    color: var(--brg);
+    margin-bottom: 16px;
+    letter-spacing: -0.01em;
+  }
+
+  .capability-body {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--ink-muted);
+  }
+
+  /* ——— Sovereignty Q&A ——— */
+  .qa-grid {
+    margin: 48px 0 32px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .qa {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 48px;
+    padding: 24px 0;
+    border-top: 1px solid var(--rule);
+    align-items: baseline;
+  }
+
+  .qa:first-child { border-top: 1px solid var(--brass); }
+  .qa:last-child { border-bottom: 1px solid var(--rule); }
+
+  .qa-q {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 22px;
+    color: var(--brg);
+    line-height: 1.3;
+    letter-spacing: -0.005em;
+  }
+
+  .qa-a {
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--ink);
+  }
+
+  /* ——— Pricing posture ——— */
+  .pricing {
+    background: var(--paper-warm);
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .pricing-tiers {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    margin-top: 48px;
+    border-top: 1px solid var(--rule);
+    border-left: 1px solid var(--rule);
+  }
+
+  .pricing-tier {
+    padding: 40px 36px;
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    background: var(--paper);
+  }
+
+  .pricing-tier-label {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--brass);
+    margin-bottom: 12px;
+    letter-spacing: 0.02em;
+  }
+
+  .pricing-tier-title {
+    font-family: 'EB Garamond', serif;
+    font-size: 24px;
+    font-weight: 500;
+    color: var(--brg);
+    margin-bottom: 16px;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+
+  .pricing-tier-body {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--ink-muted);
+    margin-bottom: 18px;
+  }
+
+  .pricing-tier-meta {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--brg-soft);
+    line-height: 1.5;
+    padding-top: 14px;
+    border-top: 1px solid var(--rule);
+  }
+
+  /* ——— Persona signal — full bleed BRG ——— */
+  .signal {
+    background: var(--brg);
+    color: var(--paper);
+    padding: 160px 56px;
+  }
+
+  .signal .container { max-width: 920px; }
+
+  .signal-label {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--brass-soft);
+    margin-bottom: 32px;
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .signal-label::before {
+    content: '';
+    display: inline-block;
+    width: 32px; height: 1px;
+    background: var(--brass-soft);
+  }
+
+  .signal-headline {
+    font-family: 'EB Garamond', serif;
+    font-size: clamp(36px, 5vw, 60px);
+    line-height: 1.15;
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    color: var(--paper);
+    max-width: 22ch;
+    margin-bottom: 40px;
+  }
+
+  .signal-headline em {
+    font-style: italic;
+    color: var(--brass-soft);
+  }
+
+  .signal-body {
+    font-size: 19px;
+    line-height: 1.7;
+    color: var(--paper-warm);
+    opacity: 0.92;
+    max-width: 680px;
+    margin-bottom: 56px;
+  }
+
+  .signal-prompt {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 22px;
+    color: var(--brass-soft);
+    margin-bottom: 24px;
+    line-height: 1.5;
+    max-width: 720px;
+    letter-spacing: -0.005em;
+  }
+
+  .signal-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    font-family: 'EB Garamond', serif;
+    font-size: 24px;
+    font-style: italic;
+    color: var(--paper);
+    text-decoration: none;
+    border-bottom: 1px solid var(--brass-soft);
+    padding-bottom: 8px;
+    transition: color 0.2s ease, border-color 0.2s ease;
+    letter-spacing: -0.005em;
+  }
+
+  .signal-cta:hover {
+    color: var(--brass-soft);
+    border-bottom-color: var(--paper);
+  }
+
+  .signal-cta-arrow { font-style: normal; font-size: 18px; }
+
+  .signal-note {
+    margin-top: 32px;
+    font-size: 14px;
+    font-style: italic;
+    color: var(--paper-warm);
+    opacity: 0.7;
+    letter-spacing: 0.01em;
+  }
+
+  /* ——— Provenance / family-office anchor ——— */
+  .provenance {
+    padding: 140px 56px;
+    background: var(--paper);
+  }
+
+  .provenance-grid {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .provenance-body p {
+    font-size: 17px;
+    line-height: 1.7;
+    color: var(--ink);
+    margin-bottom: 20px;
+  }
+
+  .provenance-body p:last-child { margin-bottom: 0; }
+
+  .provenance-body strong {
+    font-weight: 500;
+    color: var(--brg);
+  }
+
+  /* ——— Footer ——— */
+  footer {
+    background: var(--brg-deep);
+    color: var(--paper);
+    padding: 120px 56px 48px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .footer-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 80px;
+    padding-bottom: 80px;
+    border-bottom: 1px solid rgba(245, 241, 234, 0.15);
+  }
+
+  .footer-mark {
+    font-family: 'EB Garamond', serif;
+    font-size: 36px;
+    color: var(--paper);
+    margin-bottom: 20px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+  }
+
+  .footer-tagline {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 18px;
+    color: var(--brass-soft);
+    max-width: 34ch;
+    line-height: 1.5;
+  }
+
+  .footer-col-label {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--brass-soft);
+    margin-bottom: 20px;
+  }
+
+  .footer-col a, .footer-col p {
+    display: block;
+    color: var(--paper-warm);
+    text-decoration: none;
+    font-size: 15px;
+    line-height: 1.8;
+    opacity: 0.85;
+    transition: opacity 0.2s ease;
+  }
+
+  .footer-col a:hover { opacity: 1; }
+
+  .footer-bottom {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-top: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    color: var(--paper-warm);
+    opacity: 0.6;
+    letter-spacing: 0.02em;
+  }
+
+  .co-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .co-brand-rule {
+    width: 24px; height: 1px;
+    background: var(--brass-soft);
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ——— Confidential computing block ——— */
+  .confidential {
+    padding: 160px 56px;
+    background: var(--paper);
+    border-top: 1px solid var(--rule);
+  }
+
+  .confidential .section-lead em {
+    font-style: italic;
+    color: var(--brg-soft);
+  }
+
+  .confidential-grid {
+    margin-top: 24px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--brass);
+    border-left: 1px solid var(--rule);
+  }
+
+  .confidential-col {
+    padding: 40px 32px;
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    background: var(--paper);
+  }
+
+  .confidential-col-num {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--brass);
+    margin-bottom: 14px;
+    letter-spacing: 0.02em;
+  }
+
+  .confidential-col-title {
+    font-family: 'EB Garamond', serif;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--brg);
+    line-height: 1.25;
+    margin-bottom: 28px;
+    letter-spacing: -0.01em;
+  }
+
+  .confidential-col-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .confidential-col-list li {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--ink);
+    padding: 16px 0 16px 20px;
+    border-top: 1px solid var(--rule);
+    position: relative;
+  }
+
+  .confidential-col-list li:first-child {
+    border-top: none;
+    padding-top: 0;
+  }
+
+  .confidential-col-list li::before {
+    content: '—';
+    color: var(--brass);
+    position: absolute;
+    left: 0;
+    top: 16px;
+  }
+
+  .confidential-col-list li:first-child::before {
+    top: 0;
+  }
+
+  .confidential-closer {
+    margin-top: 56px;
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 22px;
+    line-height: 1.5;
+    color: var(--brg-soft);
+    max-width: 820px;
+    letter-spacing: -0.005em;
+  }
+
+  .confidential-closer em {
+    color: var(--brass);
+    font-style: italic;
+  }
+
+  @media (max-width: 960px) {
+    nav { padding: 20px 24px; }
+    .nav-links { display: none; }
+    section { padding: 100px 24px; }
+    .hero { padding-top: 140px; }
+    .hero-origin { font-size: 16px; max-width: 100%; }
+    .credentials { padding: 60px 24px; }
+    .credentials-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+    .credentials-distinction { grid-template-columns: 1fr; gap: 12px; margin-top: 40px; padding-top: 32px; }
+    .cred-distinction-value { font-size: 18px; }
+    .persona-grid { grid-template-columns: 1fr; }
+    .persona { padding: 40px 28px; }
+    .persona-name { font-size: 26px; }
+    .persona-question { font-size: 17px; }
+    .capabilities { grid-template-columns: 1fr; }
+    .qa { grid-template-columns: 1fr; gap: 8px; padding: 20px 0; }
+    .qa-q { font-size: 19px; }
+    .qa-a { font-size: 15px; }
+    .pricing-tiers { grid-template-columns: 1fr; }
+    .signal { padding: 100px 24px; }
+    .signal-headline { font-size: 32px; }
+    .signal-cta { font-size: 19px; }
+    .provenance { padding: 80px 24px; }
+    .provenance-grid { grid-template-columns: 1fr; gap: 40px; }
+    .footer-grid { grid-template-columns: 1fr; gap: 48px; }
+    .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+    .problem-body { font-size: 22px; }
+    .confidential { padding: 100px 24px; }
+    .confidential-grid { grid-template-columns: 1fr; }
+    .confidential-col { padding: 32px 24px; }
+    .confidential-closer { font-size: 19px; }
   }
 </style>
 </head>
 <body>
 
-<div class="container">
-  <div class="badge">Zug, Switzerland</div>
-  <h1>ANA<br><span>HOLDING</span></h1>
-  <p class="tagline">Private Trading & Commodity Solutions</p>
-  <p class="location">Part of Ana Wealth</p>
-  <div class="divider"></div>
-  <p class="description">Ana Holding is a private trading company specialising in the sourcing, certification, and facilitation of high-purity metals across international markets.</p>
-  <button class="contact-btn" onclick="document.getElementById('overlay').classList.add('active')">Contact Us</button>
-</div>
+<nav id="nav">
+  <div class="mark">
+    <span class="mark-dot"></span>
+    Steward
+  </div>
+  <div class="nav-links">
+    <a href="#personas">Who It's For</a>
+    <a href="#capabilities">Capabilities</a>
+    <a href="#sovereignty">Sovereignty</a>
+    <a href="#confidential">Confidential Compute</a>
+    <a href="#pricing">Engagement</a>
+  </div>
+  <a href="mailto:contact@ana-wealth.ch?subject=Steward%20%E2%80%94%20interest" class="nav-cta">Tell us about your group</a>
+</nav>
 
-<div class="overlay" id="overlay" onclick="if(event.target===this)this.classList.remove('active')">
-  <div class="form-card">
-    <button class="close-btn" onclick="document.getElementById('overlay').classList.remove('active')">&times;</button>
-    <div id="form-view">
-      <h2>Get in Touch</h2>
-      <p>We will respond within one business day.</p>
-      <form id="contact-form" action="https://formsubmit.co/info@ana-holding.ch" method="POST">
-        <input type="hidden" name="_subject" value="New inquiry from ana-holding.ch">
-        <input type="hidden" name="_next" value="https://ana-holding.ch">
-        <input type="hidden" name="_captcha" value="false">
-        <input type="text" name="_honey" style="display:none">
-        <div class="form-group">
-          <label>Name</label>
-          <input type="text" name="name" required>
-        </div>
-        <div class="form-group">
-          <label>Email</label>
-          <input type="email" name="email" required>
-        </div>
-        <div class="form-group">
-          <label>Message</label>
-          <textarea name="message" required></textarea>
-        </div>
-        <button type="submit" class="contact-btn submit-btn">Send Message</button>
-      </form>
+<!-- ——— Hero ——— -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-label">
+      <span class="hero-label-rule"></span>
+      Built in Switzerland · For closed groups, not crowds
     </div>
-    <div class="success-msg" id="success-msg">
-      <h3>Message Sent</h3>
-      <p>Thank you for reaching out. We will be in touch shortly.</p>
+    <h1 class="hero-headline">
+      Modern AI for the work the world <em>cannot see</em>.
+    </h1>
+    <p class="hero-sub">
+      A private workspace where boards, deal teams, legal matters and other small trust-bound groups adopt modern AI without the trade-off. Hosted in Switzerland. Built so that no one outside your group — including our own staff — can see your data, even when the system is using it. For the work where the cost of a leak is measured in years.
+    </p>
+    <div class="hero-meta">
+      <span class="hero-meta-rule"></span>
+      <span>Built in Zug · Hosted on Swiss-sovereign infrastructure</span>
+    </div>
+    <p class="hero-origin">
+      First built for our own family-office work. Now offered to a wider set of groups whose work shares the same shape: <em>closed, sensitive, and worth getting right</em>.
+    </p>
+  </div>
+</section>
+
+<!-- ——— Problem ——— -->
+<section class="problem">
+  <div class="container-narrow">
+    <div class="problem-body reveal">
+      <p>
+        Every closed group of professionals — five directors on a board, a dozen people in a deal room, a legal team running a regulated matter — is now caught in the same bind. The consumer AI products are out of bounds: feeding privileged or material non-public information to a vendor whose terms permit training is not a defensible decision. The enterprise AI products are built for thousands of seats inside a single company, not for the small, cross-organisational, advisor-laden rooms where the actual decisions get made.
+      </p>
+      <p>
+        So most of these rooms do nothing. Members go back to their personal AI accounts on the side, and the work of the room continues to live where it has always lived — in inboxes, scattered files, and the heads of two or three people.
+      </p>
+      <div class="problem-quote">
+        Meanwhile, what the room knows lives <span class="accent">everywhere</span> —<br/>and what it decided lives in <span class="accent">no one place at all</span>.
+      </div>
+      <p>
+        The trade-off being offered — <em>capability or confidentiality, pick one</em> — is not a real trade-off. It exists because nobody has built the alternative for groups of this shape.
+      </p>
+      <p>We have.</p>
     </div>
   </div>
-</div>
+</section>
 
-<div class="footer">&copy; 2026 Ana Holding AG</div>
+<!-- ——— Credentials strip ——— -->
+<section class="credentials">
+  <div class="credentials-grid">
+    <div class="cred">
+      <div class="cred-label">Hosted in</div>
+      <div class="cred-value">Zurich &amp; Geneva data centres</div>
+    </div>
+    <div class="cred">
+      <div class="cred-label">Governed by</div>
+      <div class="cred-value">Swiss Federal Data Protection Act (FADP)</div>
+    </div>
+    <div class="cred">
+      <div class="cred-label">Data residency</div>
+      <div class="cred-value">Never leaves Switzerland by default</div>
+    </div>
+    <div class="cred">
+      <div class="cred-label">Operated by</div>
+      <div class="cred-value">A Swiss team, accountable to Swiss law</div>
+    </div>
+  </div>
+  <div class="credentials-distinction">
+    <div class="cred-distinction-label">And, going beyond</div>
+    <div class="cred-distinction-value">
+      <strong>No one sees your data. Not even us.</strong> The infrastructure is built so that our own engineers cannot read your documents or your team's queries — not by policy, but by how the hardware is designed.
+    </div>
+  </div>
+</section>
 
+<!-- ——— Personas ——— the centerpiece -->
+<section id="personas" class="personas">
+  <div class="container">
+    <div class="section-label reveal">Who Steward Is For</div>
+    <h2 class="section-title reveal">A short list of <em>rooms</em> we are built for.</h2>
+    <p class="persona-intro reveal">
+      Steward is shaped for groups where every member is trusted, every document is sensitive, and the work persists across years. If your room looks like one of the four below, the fit is likely. If it looks like something we have not yet listed, we want to hear about it — that prompt is at the bottom of this page.
+    </p>
+
+    <div class="persona-grid reveal">
+
+      <div class="persona">
+        <div class="persona-num">01</div>
+        <h3 class="persona-name">Boards &amp; secretariats</h3>
+        <p class="persona-tag">Listed companies, foundations, regulated entities, pension boards.</p>
+        <div class="persona-fields">
+          <div class="persona-field">
+            <div class="persona-field-label">Shape</div>
+            <div class="persona-field-value">5–15 directors plus a small secretariat. Members rarely overlap with day-to-day staff. Materials cycle quarterly.</div>
+          </div>
+          <div class="persona-field">
+            <div class="persona-field-label">The work</div>
+            <div class="persona-field-value">Board books, minutes, resolutions, regulator filings, committee papers — and the long memory of how the board has actually decided things over time.</div>
+          </div>
+          <div class="persona-field">
+            <div class="persona-field-label">What hurts</div>
+            <div class="persona-field-value">Diligent and Boardvantage hold the documents but cannot reason over them. ChatGPT cannot be used for material non-public information.</div>
+          </div>
+        </div>
+        <p class="persona-question">What did the board actually decide on the dividend policy review of 2022, and what conditions did the audit committee attach?</p>
+        <a href="mailto:contact@ana-wealth.ch?subject=Steward%20%E2%80%94%20board%20interest&amp;body=I%20serve%20on%20or%20support%20a%20board.%20Brief%20note%20about%20my%20context%3A%0A%0A" class="persona-cta">
+          Write to us about your board
+          <span class="persona-cta-arrow">→</span>
+        </a>
+      </div>
+
+      <div class="persona">
+        <div class="persona-num">02</div>
+        <h3 class="persona-name">Transaction &amp; investment committees</h3>
+        <p class="persona-tag">M&amp;A teams, deal rooms, IC, private equity, special situations.</p>
+        <div class="persona-fields">
+          <div class="persona-field">
+            <div class="persona-field-label">Shape</div>
+            <div class="persona-field-value">A core team of 4–10 with a wider ring of advisors — counsel, accountants, bankers — who come and go by deal.</div>
+          </div>
+          <div class="persona-field">
+            <div class="persona-field-label">The work</div>
+            <div class="persona-field-value">Diligence files, IC memos, term sheets, integration plans, post-mortems. Cross-deal pattern recognition matters as much as the live deal.</div>
+          </div>
+          <div class="persona-field">
+            <div class="persona-field-label">What hurts</div>
+            <div class="persona-field-value">Each deal starts from a blank room. Lessons from the last three deals live in two people's heads. NDAs prevent any consumer AI use.</div>
+          </div>
+        </div>
+        <p class="persona-question">Across our last twelve diligences, where did revenue quality assumptions diverge from what we found in the first ninety days post-close?</p>
+        <a href="mailto:contact@ana-wealth.ch?subject=Steward%20%E2%80%94%20deal%20team%20interest&amp;body=My%20team%20runs%20transactions%20or%20investment%20decisions.%20Brief%20note%20about%20my%20context%3A%0A%0A" class="persona-cta">
+          Write to us about your deal team
+          <span class="persona-cta-arrow">→</span>
+        </a>
+      </div>
+
+      <div class="persona">
+        <div class="persona-num">03</div>
+        <h3 class="persona-name">Legal &amp; matter teams</h3>
+        <p class="persona-tag">In-house legal, GC offices, outside counsel project rooms, regulatory teams.</p>
+        <div class="persona-fields">
+          <div class="persona-field">
+            <div class="persona-field-label">Shape</div>
+            <div class="persona-field-value">A matter team formed for a specific case or workstream — internal and external counsel, often across firms and jurisdictions.</div>
+          </div>
+          <div class="persona-field">
+            <div class="persona-field-label">The work</div>
+            <div class="persona-field-value">Pleadings, contracts, opinions, regulator correspondence, e-discovery review. Privilege and confidentiality are not features — they are the floor.</div>
+          </div>
+          <div class="persona-field">
+            <div class="persona-field-label">What hurts</div>
+            <div class="persona-field-value">Discovery platforms answer search queries but not actual legal questions. Most AI tools' terms of service are incompatible with privilege.</div>
+          </div>
+        </div>
+        <p class="persona-question">What positions has opposing counsel taken on indemnification scope across the last four matters with this firm — and where have they conceded?</p>
+        <a href="mailto:contact@ana-wealth.ch?subject=Steward%20%E2%80%94%20legal%20matter%20interest&amp;body=I%20lead%20or%20support%20a%20legal%20matter%20team.%20Brief%20note%20about%20my%20context%3A%0A%0A" class="persona-cta">
+          Write to us about your matter team
+          <span class="persona-cta-arrow">→</span>
+        </a>
+      </div>
+
+      <div class="persona">
+        <div class="persona-num">04</div>
+        <h3 class="persona-name">Executive &amp; strategy committees</h3>
+        <p class="persona-tag">Excos, corporate development, transformation programmes, sensitive strategic work.</p>
+        <div class="persona-fields">
+          <div class="persona-field">
+            <div class="persona-field-label">Shape</div>
+            <div class="persona-field-value">A small senior team plus rotating contributors. The work is too sensitive for the wider company and too open-ended for a deal room.</div>
+          </div>
+          <div class="persona-field">
+            <div class="persona-field-label">The work</div>
+            <div class="persona-field-value">Strategy papers, market scans, competitive reviews, restructuring options, board pre-reads. Threads run for years without ever becoming a single document.</div>
+          </div>
+          <div class="persona-field">
+            <div class="persona-field-label">What hurts</div>
+            <div class="persona-field-value">The thinking lives in calendars, decks, and side-channel chats. New members onboard without the institutional memory of why the last option was rejected.</div>
+          </div>
+        </div>
+        <p class="persona-question">When we last looked seriously at exiting the Iberian business in 2024, what assumptions did we make and which of them have changed?</p>
+        <a href="mailto:contact@ana-wealth.ch?subject=Steward%20%E2%80%94%20strategy%20committee%20interest&amp;body=My%20team%20does%20senior%20strategy%20or%20corp%20dev%20work.%20Brief%20note%20about%20my%20context%3A%0A%0A" class="persona-cta">
+          Write to us about your committee
+          <span class="persona-cta-arrow">→</span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ——— Capabilities ——— -->
+<section id="capabilities">
+  <div class="container">
+    <div class="section-label reveal">What Steward Does</div>
+    <h2 class="section-title reveal">Five capabilities. <em>One workspace</em>, built to compound.</h2>
+    <p class="section-lead reveal">
+      Each works on its own. Together they make Steward the medium your group's work happens in — not a tool you log into when you remember to.
+    </p>
+
+    <div class="capabilities reveal">
+      <div class="capability">
+        <div class="capability-num">01</div>
+        <h3 class="capability-title">Memory of the room</h3>
+        <p class="capability-body">
+          Ask anything that lives in your group's documents, decisions and prior conversations. Steward reads across your permitted corpus and answers with citations to the actual source — minutes, memos, term sheets, opinions, board packs, advisor correspondence. Your group's institutional knowledge becomes searchable, not just storable, and every answer can be promoted into the room's standing record.
+        </p>
+      </div>
+      <div class="capability">
+        <div class="capability-num">02</div>
+        <h3 class="capability-title">General-purpose AI, in confidence</h3>
+        <p class="capability-body">
+          The everyday questions your members would otherwise put to ChatGPT or Claude — research, drafting, summarising, structuring — answered inside your sovereign workspace. Frontier model quality with the data protections your work requires. No queries leave the group by default. No conversation enters anyone's training set.
+        </p>
+      </div>
+      <div class="capability">
+        <div class="capability-num">03</div>
+        <h3 class="capability-title">Agents that run on schedule</h3>
+        <p class="capability-body">
+          Steward can take on recurring work and run it for you. Compile the pre-read for every quarterly meeting from the prior period's documents. Pull every newly-filed document for an active matter and summarise the changes. Flag anything overdue from the last meeting's resolutions. Set the task once. The work happens, with audit trail, until you change your mind.
+        </p>
+      </div>
+      <div class="capability">
+        <div class="capability-num">04</div>
+        <h3 class="capability-title">A knowledge graph that connects everything</h3>
+        <p class="capability-body">
+          Underneath every answer, a living map of your room: people, entities, matters, decisions, advisors, deadlines — linked by how they touch each other. The graph is what lets Steward navigate your records the way a long-serving secretary would, rather than searching them like a database. Visible in the workspace, exportable as your own folder of wiki pages — yours regardless of where your stack goes.
+        </p>
+      </div>
+      <div class="capability capability-wide capability-substrate">
+        <div class="capability-num">05</div>
+        <span class="capability-tag">The platform layer</span>
+        <h3 class="capability-title">A foundation you can build on</h3>
+        <p class="capability-body">
+          Steward is the foundation, not the ceiling. Reporting dashboards, custom workflows for your particular committee, integrations with the systems of record you already run — anything you'll want to add over the next five years reads from the same sovereign substrate. Build it yourselves on the same files Steward has been gathering all along, or commission us to build it for you. Either way, no re-ingestion, no re-migration, no vendor lock-in at the foundation layer. The technology decision you make once, that makes every subsequent decision easier.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ——— Sovereignty ——— -->
+<section id="sovereignty" class="problem">
+  <div class="container">
+    <div class="section-label reveal">The Five Questions Every Director Asks</div>
+    <h2 class="section-title reveal">Most providers ask you to <em>trust</em> them. We have built Steward so you don't have to.</h2>
+
+    <div class="qa-grid reveal">
+      <div class="qa">
+        <div class="qa-q">Where does my data live?</div>
+        <div class="qa-a">In Switzerland. In data centres in Zurich and Geneva, operated by a Swiss team, governed by Swiss law. It does not leave the country.</div>
+      </div>
+      <div class="qa">
+        <div class="qa-q">Can your staff read it?</div>
+        <div class="qa-a">No. The system is built so we cannot — even if we wanted to, even if we were ordered to. Your documents and your group's queries are unlocked only inside protected hardware that no one else, including our own engineers, has access to.</div>
+      </div>
+      <div class="qa">
+        <div class="qa-q">What if a court orders you to hand my data over?</div>
+        <div class="qa-a">We can hand over what we hold. We hold encrypted files we cannot decrypt. The Swiss courts that govern us are not subject to American or other foreign demands; the U.S. CLOUD Act does not reach Swiss-owned infrastructure.</div>
+      </div>
+      <div class="qa">
+        <div class="qa-q">Who holds the encryption keys?</div>
+        <div class="qa-a">You do. Your tenant administrator generates the keys, holds them, and can rotate or revoke them. We never receive a copy. This is the default, not a premium tier.</div>
+      </div>
+      <div class="qa">
+        <div class="qa-q">What happens when we want to leave?</div>
+        <div class="qa-a">You export everything — every document, every note, every audit log entry — as ordinary files in standard formats. No re-licensing. No vendor handover process. Walk away with what is yours.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ——— Confidential computing — how the no-one-can-read-it claim holds ——— -->
+<section id="confidential" class="confidential">
+  <div class="container">
+    <div class="section-label reveal">How the Guarantee Actually Holds</div>
+    <h2 class="section-title reveal">Confidential computing. Used properly. <em>Almost nowhere</em>.</h2>
+    <p class="section-lead reveal">
+      When we say no one outside your group can read your data — not us, not the infrastructure provider, not a court order to either of us — that claim has to rest on something more than policy. It rests on a category of infrastructure called <em>confidential computing</em>: memory that stays encrypted even while it is being processed, and hardware that attests to exactly what code is running before it agrees to unlock your data. Without it, "we cannot read your data" is a promise. With it, it is a property of the silicon.
+    </p>
+
+    <div class="confidential-grid reveal">
+      <div class="confidential-col">
+        <div class="confidential-col-num">01</div>
+        <h3 class="confidential-col-title">What it requires</h3>
+        <ul class="confidential-col-list">
+          <li>CPUs and GPUs with hardware memory-encryption (AMD SEV-SNP, Intel TDX, NVIDIA Confidential H100)</li>
+          <li>Cryptographic attestation that proves which code is running inside the encrypted boundary before any data is released to it</li>
+          <li>A key custody arrangement where neither the infrastructure operator nor the application vendor holds a copy of your decryption keys</li>
+        </ul>
+      </div>
+      <div class="confidential-col">
+        <div class="confidential-col-num">02</div>
+        <h3 class="confidential-col-title">Where it is offered in production</h3>
+        <ul class="confidential-col-list">
+          <li>A small number of major cloud providers globally — perhaps four or five, no more</li>
+          <li>A much smaller number that combine it with Swiss data residency</li>
+          <li>A smaller number still that combine it with full Swiss legal jurisdiction — no US CLOUD Act exposure, no foreign-court reach into the data while it is being processed</li>
+        </ul>
+      </div>
+      <div class="confidential-col">
+        <div class="confidential-col-num">03</div>
+        <h3 class="confidential-col-title">What we use</h3>
+        <ul class="confidential-col-list">
+          <li>An established Swiss cloud service provider that serves Swiss banks and government agencies under Swiss law</li>
+          <li>Production confidential computing across the inference and storage path — not a beta feature, not a roadmap item</li>
+          <li>Tenant-held keys, generated and rotated by your administrator. We never receive a copy. Neither does the infrastructure provider</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="confidential-closer reveal">
+      This is the substrate underneath every promise this page makes. Without it, "no one but you can see your data" is something you have to <em>trust</em>. With it, it is something you can <em>verify</em>.
+    </p>
+  </div>
+</section>
+
+<!-- ——— Pricing posture ——— -->
+<section id="pricing" class="pricing">
+  <div class="container">
+    <div class="section-label reveal">How We Engage</div>
+    <h2 class="section-title reveal">Three ways to begin. <em>One foundation</em> underneath them all.</h2>
+    <p class="section-lead reveal">
+      Steward is sold to the room, not the company. We meet groups where they are — from a single committee piloting against a defined corpus, to a federation of related rooms sharing a single sovereign tenant. Pricing is per-seat with a tenant base; numbers come from a short scoping conversation rather than a configurator.
+    </p>
+
+    <div class="pricing-tiers reveal">
+      <div class="pricing-tier">
+        <div class="pricing-tier-label">To begin</div>
+        <h3 class="pricing-tier-title">Single room</h3>
+        <p class="pricing-tier-body">One closed group — a board, a committee, a deal team, a matter — with its own corpus and its own House Rules. Self-administered. Often the way an organisation tests Steward before extending it.</p>
+        <p class="pricing-tier-meta">Typical: 5–20 seats, one tenant, contract by the year.</p>
+      </div>
+      <div class="pricing-tier">
+        <div class="pricing-tier-label">To extend</div>
+        <h3 class="pricing-tier-title">Federation of rooms</h3>
+        <p class="pricing-tier-body">Several related rooms inside one organisation — board, exco, deal team, matter teams — each with its own permissions and its own House Rules, sharing a single sovereign tenant and a common knowledge graph where the organisation chooses to share.</p>
+        <p class="pricing-tier-meta">Typical: 30–150 seats, one tenant, multi-year terms.</p>
+      </div>
+      <div class="pricing-tier">
+        <div class="pricing-tier-label">By arrangement</div>
+        <h3 class="pricing-tier-title">Dedicated infrastructure</h3>
+        <p class="pricing-tier-body">For organisations whose posture or contracts require complete physical custody — government, defence, regulated infrastructure — Steward deployed on dedicated Swiss-sovereign infrastructure or, in some cases, on infrastructure of your own. Same product, deeper isolation.</p>
+        <p class="pricing-tier-meta">Scoped per engagement.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ——— Persona signal — full bleed ——— -->
+<section class="signal">
+  <div class="container">
+    <div class="signal-label">A note about this page</div>
+    <h2 class="signal-headline">
+      We are still <em>learning</em><br/>which rooms recognise themselves here.
+    </h2>
+    <p class="signal-body">
+      Steward began inside a Swiss family office, where the fit was unambiguous. As we extend to other closed groups, we are deliberately listening before we generalise. The four personas above are our hypotheses about which rooms share enough of the underlying shape to make Steward worth their consideration. We may be missing one — or describing one in language that does not match how the work feels from the inside.
+    </p>
+    <p class="signal-prompt">
+      If you are inside a room that the four cards above do not quite capture, we would value a few sentences from you about the shape of your work.
+    </p>
+    <a href="mailto:contact@ana-wealth.ch?subject=Steward%20%E2%80%94%20a%20room%20you%20did%20not%20describe&amp;body=The%20room%20I%20am%20in%20does%20not%20quite%20match%20the%20personas%20on%20your%20page.%20Here%20is%20what%20it%20looks%20like%3A%0A%0A%E2%80%A2%20Who%20is%20in%20it%3A%0A%E2%80%A2%20What%20kind%20of%20work%20happens%20in%20it%3A%0A%E2%80%A2%20What%20hurts%20today%3A%0A%E2%80%A2%20Why%20I%20think%20Steward%20might%20be%20relevant%3A%0A" class="signal-cta">
+      Tell us about a room we did not describe
+      <span class="signal-cta-arrow">→</span>
+    </a>
+    <p class="signal-note">We read each one personally. Replies within a few days.</p>
+  </div>
+</section>
+
+<!-- ——— Provenance / family-office anchor ——— -->
+<section class="provenance">
+  <div class="provenance-grid">
+    <div>
+      <div class="section-label reveal">Where Steward Comes From</div>
+      <h2 class="section-title reveal">Built first for the room <em>we know best</em>.</h2>
+    </div>
+    <div class="provenance-body reveal">
+      <p>
+        Steward was built inside ANA Wealth, a Swiss family office, for our own work. Family offices were the original room: small, trust-bound, document-heavy, advisor-laden, with decades of history that nobody had time to make searchable. The product still serves them — and a separate page describes that fit in detail.
+      </p>
+      <p>
+        Extending Steward beyond family offices is a deliberate move, not an afterthought. The substrate underneath — sovereign Swiss infrastructure, knowledge graph plus vector retrieval, House Rules per room — turned out to fit a wider class of work than the original use case. <strong>Boards, deal teams, legal matters, and strategy committees share the same shape</strong>: closed membership, sensitive material, multi-year continuity, and a need for AI that cannot be answered by either consumer or enterprise products as they stand.
+      </p>
+      <p>
+        We are extending carefully, with one director or general counsel at a time, because the rooms we serve are not the kind of rooms that tolerate being a beta market.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ——— Footer ——— -->
+<footer id="contact">
+  <div class="footer-grid">
+    <div>
+      <div class="footer-mark">Steward<span style="color: var(--brass);">.</span></div>
+      <p class="footer-tagline">
+        Held in trust. Held in memory.
+      </p>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-label">Built By</div>
+      <a href="#">ANA Wealth · Zug</a>
+      <p style="margin-top: 12px; font-size: 14px;">Hosted on Swiss-sovereign infrastructure operated by an established provider that serves Swiss banks and government agencies under Swiss law.</p>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-label">Contact</div>
+      <a href="mailto:contact@ana-wealth.ch?subject=Steward%20%E2%80%94%20interest">contact@ana-wealth.ch</a>
+      <p style="margin-top: 12px; font-size: 14px;">We reply within a few days.</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="co-brand">
+      <span>Built by ANA Wealth · Zug</span>
+      <span class="co-brand-rule"></span>
+      <span>Hosted in Switzerland</span>
+    </div>
+    <div>© 2026 · Hosted in Switzerland</div>
+  </div>
+</footer>
+
+<script>
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 20) {
+      nav.classList.add('scrolled');
+    } else {
+      nav.classList.remove('scrolled');
+    }
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -80px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
 
 </body>
 </html>
